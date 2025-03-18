@@ -1,1 +1,35 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* Global styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.connector-status-running {
+  color: #28a745;
+}
+
+.connector-status-paused {
+  color: #ffc107;
+}
+
+.connector-status-failed {
+  color: #dc3545;
+}
+
+.connector-status-unassigned {
+  color: #6c757d;
+}

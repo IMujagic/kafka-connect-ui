@@ -1,0 +1,37 @@
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Kafka Connect UI</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          Enter your Kafka Connect REST API URL to get started.
+        </p>
+        
+        <div class="alert alert-danger" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+        
+        <div class="mb-3">
+          <label for="apiUrl" class="form-label">Kafka Connect API URL</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="apiUrl" 
+            placeholder="http://localhost:8083" 
+            [(ngModel)]="apiUrl"
+            (keyup.enter)="saveApiUrl()"
+          >
+          <div class="form-text">
+            Example: http://localhost:8083
+          </div>
+        </div>
+        
+        <button class="btn btn-primary" (click)="saveApiUrl()">
+          Connect
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,166 @@
+<div class="row mb-4">
+  <div class="col">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2>
+        <button class="btn btn-outline-secondary me-3" (click)="goBack()">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        {{ connectorName }}
+      </h2>
+      <div>
+        <button class="btn btn-outline-danger" (click)="deleteConnector()">
+          <i class="bi bi-trash"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading spinner -->
+<div class="text-center my-5" *ngIf="loading">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p class="mt-2">Loading connector details...</p>
+</div>
+
+<!-- Error message -->
+<div class="alert alert-danger" *ngIf="error">
+  <i class="bi bi-exclamation-triangle-fill me-2"></i>
+  {{ error }}
+</div>
+
+<!-- Connector details -->
+<div *ngIf="!loading && connector && connectorStatus">
+  <!-- Status and actions -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h5>Status</h5>
+          <p>
+            <span class="badge bg-secondary" [ngClass]="getStatusClass(connectorStatus.connector.state)">
+              {{ connectorStatus.connector.state }}
+            </span>
+          </p>
+          <p>Type: {{ connector.type }}</p>
+          <p>Worker ID: {{ connectorStatus.connector.worker_id }}</p>
+        </div>
+        <div class="col-md-6">
+          <h5>Actions</h5>
+          <div class="btn-group">
+            <button class="btn btn-outline-primary" (click)="restartConnector()">
+              <i class="bi bi-arrow-repeat"></i> Restart
+            </button>
+            <button class="btn btn-outline-warning" (click)="pauseConnector()" *ngIf="connectorStatus.connector.state !== 'PAUSED'">
+              <i class="bi bi-pause-fill"></i> Pause
+            </button>
+            <button class="btn btn-outline-success" (click)="resumeConnector()" *ngIf="connectorStatus.connector.state === 'PAUSED'">
+              <i class="bi bi-play-fill"></i> Resume
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'info'" (click)="setActiveTab('info')" href="javascript:void(0)">
+        Info
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'config'" (click)="setActiveTab('config')" href="javascript:void(0)">
+        Configuration
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'tasks'" (click)="setActiveTab('tasks')" href="javascript:void(0)">
+        Tasks
+      </a>
+    </li>
+  </ul>
+
+  <!-- Info tab -->
+  <div *ngIf="activeTab === 'info'">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Connector Information</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Name:</strong> {{ connector.name }}</p>
+            <p><strong>Type:</strong> {{ connector.type }}</p>
+            <p><strong>Tasks:</strong> {{ connector.tasks.length }}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Status:</strong> 
+              <span [ngClass]="getStatusClass(connectorStatus.connector.state)">
+                {{ connectorStatus.connector.state }}
+              </span>
+            </p>
+            <p><strong>Worker ID:</strong> {{ connectorStatus.connector.worker_id }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Config tab -->
+  <div *ngIf="activeTab === 'config'">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Configuration</h5>
+        <button class="btn btn-sm" [ngClass]="editMode ? 'btn-danger' : 'btn-primary'" (click)="toggleEditMode()">
+          {{ editMode ? 'Cancel' : 'Edit' }}
+        </button>
+      </div>
+      <div class="card-body">
+        <div *ngIf="!editMode">
+          <pre class="bg-light p-3 rounded"><code>{{ configJson }}</code></pre>
+        </div>
+        <div *ngIf="editMode">
+          <textarea class="form-control font-monospace" rows="20" [(ngModel)]="configJson"></textarea>
+          <div class="mt-3">
+            <button class="btn btn-success" (click)="saveConfig()">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tasks tab -->
+  <div *ngIf="activeTab === 'tasks'">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Tasks</h5>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Task ID</th>
+                <th>State</th>
+                <th>Worker ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let task of connectorStatus.tasks">
+                <td>{{ task.id }}</td>
+                <td>
+                  <span class="badge bg-secondary" [ngClass]="getStatusClass(task.state)">
+                    {{ task.state }}
+                  </span>
+                </td>
+                <td>{{ task.worker_id }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="connectorStatus.tasks.length === 0" class="alert alert-info">
+          No tasks found for this connector.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

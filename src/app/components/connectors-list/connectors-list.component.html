@@ -1,0 +1,53 @@
+<div class="row mb-4">
+  <div class="col">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2>Kafka Connect Connectors</h2>
+      <div>
+        <button class="btn btn-outline-secondary me-2" (click)="changeApiUrl()">
+          Change API URL
+        </button>
+        <button class="btn btn-primary" (click)="loadConnectors()">
+          <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+      </div>
+    </div>
+    <p class="text-muted">Connected to: {{ apiUrl }}</p>
+  </div>
+</div>
+
+<!-- Loading spinner -->
+<div class="text-center my-5" *ngIf="loading">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p class="mt-2">Loading connectors...</p>
+</div>
+
+<!-- Error message -->
+<div class="alert alert-danger" *ngIf="error">
+  <i class="bi bi-exclamation-triangle-fill me-2"></i>
+  {{ error }}
+</div>
+
+<!-- No connectors message -->
+<div class="alert alert-info" *ngIf="!loading && !error && connectors.length === 0">
+  <i class="bi bi-info-circle-fill me-2"></i>
+  No connectors found. Create a connector using the Kafka Connect API.
+</div>
+
+<!-- Connectors list -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" *ngIf="!loading && connectors.length > 0">
+  <div class="col" *ngFor="let connector of connectors">
+    <div class="card h-100" (click)="viewConnector(connector)" style="cursor: pointer;">
+      <div class="card-body">
+        <h5 class="card-title">{{ connector }}</h5>
+        <p class="card-text text-muted">
+          Click to view details
+        </p>
+      </div>
+      <div class="card-footer bg-transparent">
+        <small class="text-muted">Connector</small>
+      </div>
+    </div>
+  </div>
+</div>
